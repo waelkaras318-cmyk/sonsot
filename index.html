@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>المنصة الوطنية للبطاقة الاجتماعية</title>
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3064842182212605"
+     crossorigin="anonymous"></script>
+
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; margin: 0; padding: 20px; }
         .hero { padding: 40px 20px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-bottom: 2px solid #fbbf24; margin-bottom: 30px; }
@@ -41,11 +45,13 @@
         <button class="btn btn-gold" onclick="save()">إصدار البطاقة الآن</button>
     </div>
 
-    <footer style="margin-top: 50px; font-size: 12px; opacity: 0.6;">
-        <a href="privacy.html" style="color: white;">سياسة الخصوصية</a> | جميع الحقوق محفوظة لمنصة الهوية
+    <footer style="margin-top: 50px; padding: 20px; background: rgba(0,0,0,0.2); font-size: 14px;">
+        <p>جميع الحقوق محفوظة لمنصة الهوية الاجتماعية ©️ 2026</p>
+        <a href="./privacy.html" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dashed;">إضغط هنا لقراءة سياسة الخصوصية وأمان الكاميرا</a>
     </footer>
 
     <canvas id="c" style="display:none;"></canvas>
+
     <script>
         let v = document.getElementById('v'), p = document.getElementById('p'), c = document.getElementById('c');
         async function start() { const s = await navigator.mediaDevices.getUserMedia({video:true}); v.srcObject = s; }
@@ -55,10 +61,7 @@
             const data = { name: document.getElementById('name').value, dob: document.getElementById('dob').value, id: document.getElementById('res').innerText, img: p.src };
             if(!data.name || !data.dob || data.id === "0000000000") return alert("برجاء إكمال البيانات وصورة الوش!");
             localStorage.setItem('userAccount', JSON.stringify(data));
-            window.location.href = "login.html"; <footer style="margin-top: 50px; padding: 20px; background: rgba(0,0,0,0.2); font-size: 14px;">
-    <p>جميع الحقوق محفوظة لمنصة الهوية الاجتماعية © 2026</p>
-    <a href="./privacy.html" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dashed;">إضغط هنا لقراءة سياسة الخصوصية وأمان الكاميرا</a>
-</footer>
+            window.location.href = "login.html";
         }
     </script>
 </body>
