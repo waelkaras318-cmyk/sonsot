@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم - تعديل البيانات</title>
+    <style>
+        body { font-family: sans-serif; background: #111827; color: white; text-align: center; padding: 20px; }
+        .dashboard-box { 
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 30px; 
+            border-radius: 20px; 
+            width: 380px; 
+            margin: 0 auto; 
+            border: 1px solid #3b82f6; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .profile-header { color: #3b82f6; margin-bottom: 20px; }
+        .info-field { text-align: right; margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; opacity: 0.8; }
+        input { 
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; 
+            background: #1f2937; color: white; box-sizing: border-box; 
+        }
+        .btn-save { 
+            background: linear-gradient(45deg, #10b981, #34d399); 
+            color: white; font-weight: bold; border: none; padding: 12px; 
+            border-radius: 10px; width: 100%; cursor: pointer; margin-top: 20px;
+        }
+        .btn-logout {
+            background: transparent; color: #ef4444; border: 1px solid #ef4444;
+            padding: 8px; border-radius: 8px; margin-top: 15px; cursor: pointer; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-box">
+        <h2 class="profile-header">لوحة تحكم بطاقتك</h2>
+        
+        <div class="info-field">
+            <label>الاسم (لا يمكن تعديله حالياً للأمان):</label>
+            <input type="text" id="edit-name" disabled>
+        </div>
+
+        <div class="info-field">
+            <label>الرقم الاجتماعي الموحد:</label>
+            <input type="text" id="edit-id" disabled style="color: #fbbf24; font-weight: bold;">
+        </div>
+
+        <div class="info-field">
+            <label>تعديل تاريخ الميلاد:</label>
+            <input type="date" id="edit-dob">
+        </div>
+
+        <button class="btn-save" onclick="updateData()">حفظ التعديلات الجديدة</button>
+        
+        <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <script>
+        // أول ما الصفحة تفتح، بنجيب البيانات القديمة ونعرضها
+        window.onload = function() {
+            const savedData = JSON.parse(localStorage.getItem('mySocialAccount'));
+            if (!savedData) {
+                alert("لازم تسجل دخول الأول!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById('edit-name').value = savedData.name;
+            document.getElementById('edit-id').value = savedData.socialID;
+            document.getElementById('edit-dob').value = savedData.dob;
+        };
+
+        // دالة حفظ التعديلات
+        function updateData() {
+            const savedData = JSON.parse(localStorage.getItem('mySocialAccount'));
+            const newDob = document.getElementById('edit-dob').value;
+
+            if(!newDob) {
+                alert("من فضلك دخل تاريخ ميلاد صحيح");
+                return;
+            }
+
+            // تحديث التاريخ فقط في البيانات القديمة
+            savedData.dob = newDob;
+
+            // حفظ النسخة الجديدة في الـ LocalStorage
+            localStorage.setItem('mySocialAccount', JSON.stringify(savedData));
+
+            alert("تريليون مبروك! تم تحديث تاريخ ميلادك بنجاح.");
+        }
+
+        function logout() {
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>
