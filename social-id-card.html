@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة الهوية الاجتماعية</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            width: 300px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.6s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card.flip {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #capture {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="idCard">
+        <div class="card-front">
+            <h2>بطاقة الهوية الاجتماعية</h2>
+            <p id="randomId">ID: XXX-XXXX</p>
+            <button class="btn" id="flipBtn">قم بتقليب البطاقة</button>
+        </div>
+        <div class="card-back">
+            <h2>وسائل التواصل الاجتماعي</h2>
+            <p>معلومات إضافية</p>
+            <button class="btn" id="downloadBtn">تحميل الصورة</button>
+        </div>
+    </div>
+    <video id="video" width="300" height="200" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <script>
+        const flipBtn = document.getElementById('flipBtn');
+        const idCard = document.getElementById('idCard');
+        const randomId = document.getElementById('randomId');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let currentId;
+        
+        // Random ID generation
+        function generateRandomId() {
+            currentId = `${Math.floor(Math.random() * 10000)}-${Math.floor(Math.random() * 10000)}`;
+            randomId.innerText = `ID: ${currentId}`;
+        }
+        
+        // Flip card functionality
+        flipBtn.addEventListener('click', () => {
+            idCard.classList.toggle('flip');
+        });
+        
+        // Camera integration
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing camera: ', err);
+            });
+        
+        // Capture image and download
+        downloadBtn.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `social-id-card-${currentId}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        });
+        
+        // Initialize
+        generateRandomId();
+    </script>
+</body>
+</html>
