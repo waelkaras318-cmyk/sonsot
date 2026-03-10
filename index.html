@@ -1,121 +1,201 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بطاقة الهوية الاجتماعية</title>
+    <title>Sonsot - Social ID Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* كل الـ CSS اللي كان ناقص حطيتهولك هنا */
+        :root {
+            --gold: #f5d547;
+            --glass: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+        }
+
         body {
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #0f172a, #1e3a8a, #581c87);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-container {
+            width: 350px;
+            height: 220px;
+            perspective: 1000px;
+        }
+
         .card {
-            width: 300px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            transition: transform 0.6s;
+            width: 100%;
+            height: 100%;
             position: relative;
-            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
-        .card.flip {
-            transform: rotateY(180deg);
-        }
-        .card-front, .card-back {
+
+        .card.flipped { transform: rotateY(180deg); }
+
+        .front, .back {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            box-sizing: border-box;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
         }
-        .card-back {
+
+        .back {
             transform: rotateY(180deg);
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.9);
         }
-        .btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
+
+        .photo-area {
+            width: 90px;
+            height: 110px;
+            border-radius: 12px;
+            background: #334155;
+            border: 2px solid var(--border);
+            overflow: hidden;
+        }
+
+        #profile-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info-area {
+            flex: 1;
+            margin-right: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .name-text { font-size: 18px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        
+        .gold-id {
+            font-family: 'Courier New', monospace;
+            color: var(--gold);
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: -150px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            border-radius: 8px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
+            background: #3b82f6;
+            color: white;
+            transition: 0.3s;
         }
-        #capture {
-            margin-top: 20px;
+
+        button:hover { background: #2563eb; }
+
+        #video {
+            position: fixed;
+            top: 10px;
+            width: 150px;
+            border-radius: 10px;
             display: none;
         }
     </style>
 </head>
 <body>
-    <div class="card" id="idCard">
-        <div class="card-front">
-            <h2>بطاقة الهوية الاجتماعية</h2>
-            <p id="randomId">ID: XXX-XXXX</p>
-            <button class="btn" id="flipBtn">قم بتقليب البطاقة</button>
+
+    <video id="video" autoplay></video>
+
+    <div class="card-container">
+        <div class="card" id="idCard" onclick="this.classList.toggle('flipped')">
+            <div class="front">
+                <div class="photo-area">
+                    <img id="profile-img" src="https://via.placeholder.com/90x110?text=Sonsot" alt="Photo">
+                </div>
+                <div class="info-area">
+                    <div class="name-text" id="dispName">أدخل اسمك</div>
+                    <div style="font-size: 12px; color: #94a3b8;">الرقم الاجتماعي الذهبي:</div>
+                    <div class="gold-id" id="dispID">0000000000</div>
+                </div>
+            </div>
+            <div class="back">
+                <h3>Sonsot Privacy</h3>
+                <p>هذه البطاقة رقمية بالكامل</p>
+                <div style="font-size: 20px; color: var(--gold);">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                </div>
+            </div>
         </div>
-        <div class="card-back">
-            <h2>وسائل التواصل الاجتماعي</h2>
-            <p>معلومات إضافية</p>
-            <button class="btn" id="downloadBtn">تحميل الصورة</button>
+
+        <div class="controls">
+            <input type="text" id="nameInput" placeholder="اكتب اسمك هنا" style="padding: 8px; border-radius: 5px; border: none;">
+            <button onclick="startCamera()">📷 افتح الكاميرا</button>
+            <button onclick="takePhoto()" style="background: #10b981;">✅ التقط الصورة</button>
+            <button onclick="updateData()" style="background: var(--gold); color: black;">🔄 تحديث البيانات</button>
         </div>
     </div>
-    <video id="video" width="300" height="200" autoplay></video>
-    <canvas id="canvas" style="display:none;"></canvas>
+
+    <canvas id="canvas" style="display:none;" width="300" height="300"></canvas>
+
     <script>
-        const flipBtn = document.getElementById('flipBtn');
-        const idCard = document.getElementById('idCard');
-        const randomId = document.getElementById('randomId');
-        const downloadBtn = document.getElementById('downloadBtn');
+        const card = document.getElementById('idCard');
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        let currentId;
-        
-        // Random ID generation
-        function generateRandomId() {
-            currentId = `${Math.floor(Math.random() * 10000)}-${Math.floor(Math.random() * 10000)}`;
-            randomId.innerText = `ID: ${currentId}`;
+        const img = document.getElementById('profile-img');
+
+        function updateData() {
+            const name = document.getElementById('nameInput').value || "أحمد محمد";
+            document.getElementById('dispName').innerText = name;
+            let id = "";
+            for(let i=0; i<10; i++) id += Math.floor(Math.random() * 10);
+            document.getElementById('dispID').innerText = id;
         }
-        
-        // Flip card functionality
-        flipBtn.addEventListener('click', () => {
-            idCard.classList.toggle('flip');
-        });
-        
-        // Camera integration
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                console.error('Error accessing camera: ', err);
-            });
-        
-        // Capture image and download
-        downloadBtn.addEventListener('click', () => {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            canvas.toBlob(blob => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `social-id-card-${currentId}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
-        });
-        
-        // Initialize
-        generateRandomId();
+
+        async function startCamera() {
+            video.style.display = "block";
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+        }
+
+        function takePhoto() {
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, 300, 300);
+            img.src = canvas.toDataURL('image/png');
+            video.srcObject.getTracks().forEach(t => t.stop());
+            video.style.display = "none";
+        }
     </script>
 </body>
 </html>
