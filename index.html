@@ -2,199 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonsot - Social ID Card</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>صناعة البطاقة الاجتماعية</title>
     <style>
-        /* كل الـ CSS اللي كان ناقص حطيتهولك هنا */
-        :root {
-            --gold: #f5d547;
-            --glass: rgba(255, 255, 255, 0.1);
-            --border: rgba(255, 255, 255, 0.2);
-        }
-
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(45deg, #0f172a, #1e3a8a, #581c87);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: white;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .card-container {
-            width: 350px;
-            height: 220px;
-            perspective: 1000px;
-        }
-
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .card.flipped { transform: rotateY(180deg); }
-
-        .front, .back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-        }
-
-        .back {
-            transform: rotateY(180deg);
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            background: rgba(15, 23, 42, 0.9);
-        }
-
-        .photo-area {
-            width: 90px;
-            height: 110px;
-            border-radius: 12px;
-            background: #334155;
-            border: 2px solid var(--border);
-            overflow: hidden;
-        }
-
-        #profile-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .info-area {
-            flex: 1;
-            margin-right: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .name-text { font-size: 18px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
-        
-        .gold-id {
-            font-family: 'Courier New', monospace;
-            color: var(--gold);
-            font-size: 20px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .controls {
-            position: absolute;
-            bottom: -150px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        button {
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            background: #3b82f6;
-            color: white;
-            transition: 0.3s;
-        }
-
-        button:hover { background: #2563eb; }
-
-        #video {
-            position: fixed;
-            top: 10px;
-            width: 150px;
-            border-radius: 10px;
-            display: none;
+        body { font-family: sans-serif; background: #1e293b; color: white; text-align: center; padding: 20px; }
+        .creator-box { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; width: 350px; margin: 0 auto; border: 1px solid gold; }
+        input, select { width: 90%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; }
+        .social-id-display { font-size: 24px; color: #fbbf24; font-weight: bold; margin: 20px 0; background: #000; padding: 10px; border-radius: 10px; }
+        .btn-generate { background: #3b82f6; color: white; cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; }
+        /* زرار "تمام" الذهبي */
+        .btn-tamam { 
+            background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728); 
+            color: #1e3a8a; font-weight: bold; cursor: pointer; border: none; 
+            padding: 15px 30px; border-radius: 10px; margin-top: 20px; width: 100%; font-size: 18px;
         }
     </style>
 </head>
 <body>
 
-    <video id="video" autoplay></video>
+    <div class="creator-box">
+        <h2>إصدار هوية جديدة</h2>
+        
+        <input type="text" id="name-input" placeholder="الاسم بالكامل">
+        
+        <select id="gender-input">
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+        </select>
 
-    <div class="card-container">
-        <div class="card" id="idCard" onclick="this.classList.toggle('flipped')">
-            <div class="front">
-                <div class="photo-area">
-                    <img id="profile-img" src="https://via.placeholder.com/90x110?text=Sonsot" alt="Photo">
-                </div>
-                <div class="info-area">
-                    <div class="name-text" id="dispName">أدخل اسمك</div>
-                    <div style="font-size: 12px; color: #94a3b8;">الرقم الاجتماعي الذهبي:</div>
-                    <div class="gold-id" id="dispID">0000000000</div>
-                </div>
-            </div>
-            <div class="back">
-                <h3>Sonsot Privacy</h3>
-                <p>هذه البطاقة رقمية بالكامل</p>
-                <div style="font-size: 20px; color: var(--gold);">
-                    <i class="fab fa-facebook"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-twitter"></i>
-                </div>
-            </div>
-        </div>
+        <label style="display:block; margin-top:10px;">تاريخ الميلاد:</label>
+        <input type="date" id="dob-input">
 
-        <div class="controls">
-            <input type="text" id="nameInput" placeholder="اكتب اسمك هنا" style="padding: 8px; border-radius: 5px; border: none;">
-            <button onclick="startCamera()">📷 افتح الكاميرا</button>
-            <button onclick="takePhoto()" style="background: #10b981;">✅ التقط الصورة</button>
-            <button onclick="updateData()" style="background: var(--gold); color: black;">🔄 تحديث البيانات</button>
-        </div>
+        <button class="btn-generate" onclick="generateNumber()">توليد رقم اجتماعي</button>
+        
+        <div class="social-id-display" id="social-id">0000000000</div>
+
+        <button class="btn-tamam" onclick="saveAndGoToLogin()">تـمـام</button>
     </div>
 
-    <canvas id="canvas" style="display:none;" width="300" height="300"></canvas>
-
     <script>
-        const card = document.getElementById('idCard');
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const img = document.getElementById('profile-img');
-
-        function updateData() {
-            const name = document.getElementById('nameInput').value || "أحمد محمد";
-            document.getElementById('dispName').innerText = name;
-            let id = "";
-            for(let i=0; i<10; i++) id += Math.floor(Math.random() * 10);
-            document.getElementById('dispID').innerText = id;
+        // دالة توليد الرقم الـ 10 أرقام
+        function generateNumber() {
+            let num = Math.floor(Math.random() * 9000000000) + 1000000000;
+            document.getElementById('social-id').innerText = num;
         }
 
-        async function startCamera() {
-            video.style.display = "block";
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
-        }
+        // دالة "تمام" - حفظ البيانات والنقل
+        function saveAndGoToLogin() {
+            const name = document.getElementById('name-input').value;
+            const gender = document.getElementById('gender-input').value;
+            const dob = document.getElementById('dob-input').value;
+            const id = document.getElementById('social-id').innerText;
 
-        function takePhoto() {
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, 300, 300);
-            img.src = canvas.toDataURL('image/png');
-            video.srcObject.getTracks().forEach(t => t.stop());
-            video.style.display = "none";
+            if(name === "" || dob === "" || id === "0000000000") {
+                alert("يا صاحبي كمل بيانات الملوخية (الاسم والتاريخ والرقم) الأول!");
+                return;
+            }
+
+            // حفظ كل البيانات في "مخزن" المتصفح
+            const userData = {
+                name: name,
+                gender: gender,
+                dob: dob,
+                socialID: id
+            };
+            localStorage.setItem('mySocialAccount', JSON.stringify(userData));
+
+            alert("تم حفظ بياناتك! رقمك هو: " + id + "\nسيتم نقلك لصفحة الدخول.");
+            
+            // النقل لصفحة تسجيل الدخول (الملف الثاني)
+            window.location.href = "login.html";
         }
     </script>
 </body>
