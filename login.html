@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل دخول - البطاقة الاجتماعية</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 50px; }
+        .login-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; width: 300px; margin: 0 auto; border: 1px solid #fbbf24; }
+        input { width: 90%; padding: 12px; margin: 20px 0; border-radius: 8px; border: none; font-size: 18px; text-align: center; }
+        
+        /* الزرار الذهبي "دخول" */
+        .btn-entry { 
+            background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728); 
+            color: #1e3a8a; font-weight: bold; cursor: pointer; border: none; 
+            padding: 15px; border-radius: 10px; width: 100%; font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>تسجيل الدخول</h2>
+        <p>أدخل رقمك الاجتماعي (10 أرقام)</p>
+        
+        <input type="text" id="login-id" placeholder="3328282250" maxlength="10">
+
+        <button class="btn-entry" onclick="checkLogin()">دخول للتعديل</button>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const enteredID = document.getElementById('login-id').value;
+            // بنجيب البيانات اللي سيفناها في الملف الأول
+            const savedData = JSON.parse(localStorage.getItem('mySocialAccount'));
+
+            if (savedData && enteredID === savedData.socialID) {
+                alert("أهلاً بك يا " + savedData.name);
+                // لو الرقم صح، انقله لصفحة التعديل (Dashboard)
+                window.location.href = "dashboard.html";
+            } else {
+                alert("الرقم ده مش متسجل عندنا يا بطل، ارجع اصنع بطاقة الأول!");
+            }
+        }
+    </script>
+</body>
+</html>
